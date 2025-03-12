@@ -2,7 +2,7 @@ const express = require("express");
 const CryptoJS = require("crypto-js");
 const router = express.Router();
 const { verifyToken } = require("../middleware/auth");
-const Password = require("../models/Password");
+const Password = require("../models/password");
 require("dotenv").config();
 
 const SECRET_KEY = process.env.SECRET_KEY;
