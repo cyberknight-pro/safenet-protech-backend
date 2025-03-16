@@ -13,13 +13,33 @@ const app = express();
 
 // 🛡️ Security Middleware
 app.use(helmet()); // Adds security headers
-app.use(cors({ origin: process.env.CORS_ORIGIN })); // Enable CORS
-app.use(express.json()); // JSON Parser
 
-// 🚀 Rate Limiting (Prevents brute-force & DDoS)
+// ✅ Allow both local dev and production frontend
+const allowedOrigins = [
+  "http://localhost:5173", // your local frontend
+  "https://www.safenetprotect.com", // production frontend
+];
+
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed from this origin"));
+      }
+    },
+    credentials: true,
+  })
+);
+
+// JSON Body Parser
+app.use(express.json());
+
+// 🚀 Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per window
+  max: 100, // Limit each IP to 100 requests
   message: "Too many requests from this IP, please try again later.",
 });
 app.use(limiter);
@@ -35,7 +55,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: "Internal Server Error" });
 });
 
-// 🌍 Connect to MongoDB
+// 🌍 MongoDB Connection
 mongoose
   .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
@@ -44,10 +64,10 @@ mongoose
   .then(() => console.log("✅ MongoDB Connected"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-  app.get('/health', (req, res) => {
-    res.status(200).json({ message: "Server is running fine!" });
+// Health Check Endpoint
+app.get("/health", (req, res) => {
+  res.status(200).json({ message: "Server is running fine!" });
 });
-
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
