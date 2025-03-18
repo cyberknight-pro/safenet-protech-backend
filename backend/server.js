@@ -14,10 +14,12 @@ const app = express();
 // 🛡️ Security Middleware
 app.use(helmet()); // Adds security headers
 
-// ✅ Allow both local dev and production frontend
+// ✅ Allow local dev + GitHub Pages + custom domain
 const allowedOrigins = [
-  "http://localhost:5173", // your local frontend
-  "https://www.safenetprotect.com", // production frontend
+  "http://localhost:5173",                    // Local frontend dev
+  "https://www.safenetprotect.com",           // Your custom production domain
+  "https://cyberknight-pro.github.io",        // GitHub Pages base domain
+  "https://cyberknight-pro.github.io/safenet-protech", // GitHub Pages project domain
 ];
 
 app.use(
