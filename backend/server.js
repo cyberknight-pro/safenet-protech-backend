@@ -14,13 +14,14 @@ const app = express();
 // 🛡️ Security Middleware
 app.use(helmet()); // Adds security headers
 
-// ✅ Allow local dev + GitHub Pages + custom domain
 const allowedOrigins = [
-  "http://localhost:5173",                    // Local frontend dev
-  "https://www.safenetprotect.com",           // Your custom production domain
-  "https://cyberknight-pro.github.io",        // GitHub Pages base domain
-  "https://cyberknight-pro.github.io/safenet-protech", // GitHub Pages project domain
+  "http://localhost:5173",
+  "https://www.safenetprotect.com",
+  "https://cyberknight-pro.github.io",
+  "https://cyberknight-pro.github.io/safenet-protech",
+  "https://safenet-protech.vercel.app", // ✅ ADD THIS LINE for Vercel
 ];
+
 
 app.use(
   cors({
